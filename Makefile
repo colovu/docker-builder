@@ -35,13 +35,14 @@ clearclean: clean
 	@echo "Clean all images for current application..."
 	@docker images | grep "$(debian_name)" | awk '{print $$3}' | xargs docker rmi -f
 	@docker images | grep "$(alpine_name)" | awk '{print $$3}' | xargs docker rmi -f
+
 tag:
 	@echo "Add tag: $(local_registory)/$(alpine_name):latest"
 	@docker tag $(debian_name) $(local_registory)/$(debian_name)
 	@echo "Add tag: $(local_registory)/$(alpine_name):latest"
 	@docker tag $(alpine_name) $(local_registory)/$(alpine_name)
 
-push:
+push: tag
 	@echo "Push: $(local_registory)/$(alpine_name):latest"
 	@docker push $(local_registory)/$(debian_name)
 	@echo "Push: $(local_registory)/$(alpine_name):latest"
