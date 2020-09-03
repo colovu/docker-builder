@@ -11,17 +11,17 @@ current_subversion:=$(shell if [[ -d .git ]]; then git rev-parse --short HEAD; e
 current_tag:=$(shell if [[ -d .git ]]; then git rev-parse --abbrev-ref HEAD | sed -e 's/master/latest/'; else echo "latest"; fi)-$(current_subversion)
 
 # Sources List: default / tencent / ustc / aliyun / huawei
-source-name:=tencent
+build-arg:=--build-arg apt_source=tencent
 
 .PHONY: build clean clearclean upgrade tag push
 
 build:
 	@echo "Build $(debian_name):$(current_tag)"
-	@docker build --force-rm --build-arg apt_source=$(source-name) -t $(debian_name):$(current_tag) .
+	@docker build --force-rm $(build-arg) -t $(debian_name):$(current_tag) .
 	@echo "Add tag: $(debian_name):latest"
 	@docker tag "$(debian_name):$(current_tag)" $(debian_name):latest
 	@echo "Build $(alpine_name):$(current_tag)"
-	@docker build --force-rm --build-arg apk_source=$(source-name) -t $(alpine_name):$(current_tag) ./alpine
+	@docker build --force-rm $(build-arg) -t $(alpine_name):$(current_tag) ./alpine
 	@echo "Add tag: $(alpine_name):latest"
 	@docker tag "$(alpine_name):$(current_tag)" $(alpine_name):latest
 
@@ -46,6 +46,10 @@ push:
 	@docker push $(local_registory)/$(debian_name)
 	@echo "Push: $(local_registory)/$(alpine_name):latest"
 	@docker push $(local_registory)/$(alpine_name)
+	@echo "Push: $(alpine_name):latest"
+	@docker push $(debian_name)
+	@echo "Push: $(alpine_name):latest"
+	@docker push $(alpine_name)
 
 # 更新所有 colovu 仓库的镜像 
 upgrade: 

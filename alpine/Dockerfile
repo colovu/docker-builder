@@ -3,7 +3,7 @@
 FROM alpine:3.12
 
 # APK源配置：default / tencent / ustc / aliyun / huawei
-ARG apk_source=tencent
+ARG apt_source=tencent
 
 LABEL \
     "Version"="v3.12" \
