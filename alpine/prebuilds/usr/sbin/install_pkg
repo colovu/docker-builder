@@ -1,0 +1,24 @@
+#!/bin/sh
+# shell 执行参数，分别为 -e(命令执行错误则退出脚本) -u(变量未定义则报错) -x(打印实际待执行的命令行)
+set -eux
+n=0
+max=2
+until [ $n -gt $max ]; do
+    set +e
+    (
+        apk update --no-cache &&
+        apk upgrade --no-cache &&
+        apk add --no-cache "$@"
+    )
+    CODE=$?
+    set -e
+    if [ $CODE -eq 0 ]; then
+        break
+    fi
+    if [ $n -eq $max ]; then
+        exit $CODE
+    fi
+    echo "APK failed, retrying"
+    n=$(($n + 1))
+done
+rm -r /var/cache/apk/* /root/.cache /tmp/*  || :
