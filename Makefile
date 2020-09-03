@@ -2,8 +2,8 @@
 #
 # 当前 Docker 镜像的编译脚本
 
-debian_name := colovu/debian-builder
-alpine_name := colovu/alpine-builder
+debian_name := colovu/dbuilder
+alpine_name := colovu/abuilder
 local_registory := repo-dev.konkawise.com
 
 # 生成镜像TAG，类似：<镜像名>:<分支名>-<Git ID>  或 <镜像名>:latest-<年月日>-<时分秒>
@@ -11,17 +11,17 @@ current_subversion:=$(shell if [[ -d .git ]]; then git rev-parse --short HEAD; e
 current_tag:=$(shell if [[ -d .git ]]; then git rev-parse --abbrev-ref HEAD | sed -e 's/master/latest/'; else echo "latest"; fi)-$(current_subversion)
 
 # Sources List: default / tencent / ustc / aliyun / huawei
-build-arg:=--build-arg apt_source=tencent
+source-name:=tencent
 
-.PHONY: build clean clearclean upgrade tag
+.PHONY: build clean clearclean upgrade tag push
 
 build:
 	@echo "Build $(debian_name):$(current_tag)"
-	@docker build --force-rm $(build-arg) -t $(debian_name):$(current_tag) .
+	@docker build --force-rm --build-arg apt_source=$(source-name) -t $(debian_name):$(current_tag) .
 	@echo "Add tag: $(debian_name):latest"
 	@docker tag "$(debian_name):$(current_tag)" $(debian_name):latest
 	@echo "Build $(alpine_name):$(current_tag)"
-	@docker build --force-rm $(build-arg) -t $(alpine_name):$(current_tag) ./alpine
+	@docker build --force-rm --build-arg apk_source=$(source-name) -t $(alpine_name):$(current_tag) ./alpine
 	@echo "Add tag: $(alpine_name):latest"
 	@docker tag "$(alpine_name):$(current_tag)" $(alpine_name):latest
 
@@ -40,6 +40,12 @@ tag:
 	@docker tag $(debian_name) $(local_registory)/$(debian_name)
 	@echo "Add tag: $(local_registory)/$(alpine_name):latest"
 	@docker tag $(alpine_name) $(local_registory)/$(alpine_name)
+
+push:
+	@echo "Push: $(local_registory)/$(alpine_name):latest"
+	@docker push $(local_registory)/$(debian_name)
+	@echo "Push: $(local_registory)/$(alpine_name):latest"
+	@docker push $(local_registory)/$(alpine_name)
 
 # 更新所有 colovu 仓库的镜像 
 upgrade: 

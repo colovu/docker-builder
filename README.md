@@ -4,6 +4,11 @@
 
 该镜像主要用于在使用多阶段方式制作镜像时，进行软件的下载、编译等预处理操作。预安装软件包节省软件包下载及更新时间。
 
+其中：
+
+- dbuilder：基于 Debian 系统的 Builder 环境
+- abuilder：基于 Alpine 系统的 Builder环境
+
 **版本信息：**
 
 - latest
@@ -11,8 +16,8 @@
 **镜像信息：**
 
 * 镜像地址：
-  * colovu/debian-builder:latest
-  * colovu/alpine-builder:latest
+  * colovu/dbuilder:latest
+  * colovu/abuilder:latest
 
 ## 数据卷
 
@@ -23,13 +28,19 @@
  /srv/conf		# 配置文件目录
 ```
 
+## 用户
+
+镜像中增加用户`builder`，并为该用户配置了`sudo`权限。
+
+
+
 ## 使用方式
 
 使用`--from=0`方式：
 
 ```dockerfile
 # 预编译阶段
-FROM alpine-builder
+FROM colovu/abuilder
 
 WORKDIR /build
 RUN \
@@ -40,7 +51,6 @@ RUN \
 
 # 镜像生成阶段
 FROM scratch
-
 # 从编译阶段的中拷贝编译结果到当前镜像中
 COPY --from=0 /usr/local/bin/gosu /usr/local/bin/
 CMD []
@@ -50,13 +60,12 @@ CMD []
 
 ```dockerfile
 # 预编译阶段。命名为`builder`
-FROM alpine-builder as builder
+FROM colovu/abuilder as builder
 
 # ... 省略
 
 # 镜像生成阶段
 FROM scratch
-
 # 从编译阶段的中拷贝编译结果到当前镜像中
 COPY --from=builder /usr/local/bin/gosu /usr/local/bin/
 CMD []
@@ -68,7 +77,6 @@ CMD []
 
 - 不用安装、删除临时软件，方式生成多余的垃圾文件；预编译阶段的内容使用完即丢弃，不会对镜像大小产生影响
 
-  
 
 
 
