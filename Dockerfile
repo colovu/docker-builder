@@ -14,7 +14,7 @@ LABEL \
 COPY prebuilds /
 COPY customer /
 RUN select_source ${apt_source}
-RUN install_pkg sudo wget curl git ca-certificates iproute2 net-tools nano dpkg gnupg dirmngr apt-utils apt-transport-https lsb-release iputils-ping build-essential
+RUN install_pkg sudo wget curl git ca-certificates iproute2 net-tools nano dpkg gnupg dirmngr apt-utils apt-transport-https lsb-release iputils-ping build-essential cmake libcmocka-dev
 RUN prepare_env && create_user
 
 CMD []
