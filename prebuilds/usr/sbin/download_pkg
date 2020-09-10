@@ -1,6 +1,9 @@
 #!/bin/bash
+# Ver: 1.0 by Endial Fang (endial@126.com)
+# 
 # shell 执行参数，分别为 -e(命令执行错误则退出脚本) -u(变量未定义则报错) -x(打印实际待执行的命令行)
-. /usr/local/scripts/functions
+set -eux
+. /usr/local/scripts/liblog.sh
 
 print_usage() {
   LOG "Usage: download_pkg <COMMAND> <PACKAGE-NAME> \"<URLS>\" [OPTIONS]"
@@ -139,8 +142,8 @@ fi
 # 安装或解压软件
 case "$1" in
 	install) 
-    cp $CACHE_ROOT/$PACKAGE /usr/local/bin/
 		LOG_I "Installing $PACKAGE"
+		cp $CACHE_ROOT/$PACKAGE /usr/local/bin/
 		;;
 	unpack) 
 		if ! tar tzf $CACHE_ROOT/$PACKAGE >/dev/null 2>&1; then
@@ -151,7 +154,7 @@ case "$1" in
 		if which bsdtar >/dev/null 2>&1; then
   			bsdtar -xf $CACHE_ROOT/$PACKAGE
 		else
-  			tar xzf $CACHE_ROOT/$PACKAGE
+  			tar xzf $CACHE_ROOT/$PACKAGE --no-same-owner
 		fi
 		;;
 esac

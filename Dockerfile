@@ -1,4 +1,4 @@
-# Ver: 1.0 by Endial Fang (endial@126.com)
+# Ver: 1.2 by Endial Fang (endial@126.com)
 #
 FROM debian:buster-slim
 

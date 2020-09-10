@@ -4,5 +4,6 @@ set -eux
 groupadd --gid 998 --system builder
 useradd --gid 998 --uid 999 --shell /bin/bash --home /srv/data --system builder
 
+# 如果需要 sudo 权限，需要安装 su 软件包：apk add sudo 
 sed -i -e 's/^\sDefaults\s*secure_path\s*=/# Defaults secure_path=/' /etc/sudoers
 echo 'builder ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
