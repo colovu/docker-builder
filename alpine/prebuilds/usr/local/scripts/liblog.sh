@@ -41,7 +41,7 @@ stderr_print() {
 #   $2 - 日志信息
 LOG() {
     #stderr_print "${ENV_DEBUG:+${CYAN}${MODULE:-} ${MAGENTA}$(date "+%T.%2N ")}${RESET}${*}"
-    printf "${ENV_DEBUG:+${CYAN}${MODULE:-} ${MAGENTA}%s}${RESET} %b\n" "$(date "+%T")" "${*}"
+    printf "${ENV_DEBUG:+${CYAN}${MODULE:-} ${MAGENTA}%s}${RESET} %b\\n" "$(date "+%T.%2N")" "${*}"
 }
 
 # 输出调试类日志信息，尽量少使用
