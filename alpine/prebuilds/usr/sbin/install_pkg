@@ -51,3 +51,4 @@ until [ $retry -gt $max ]; do
     retry=$(($retry + 1))
 done
 rm -r /var/cache/apk/* /root/.cache /tmp/*  || :
+
