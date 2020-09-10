@@ -5,6 +5,8 @@ FROM debian:buster-slim
 # APT源配置：default / tencent / ustc / aliyun / huawei
 ARG apt_source=tencent
 
+ENV APP_USER=builder
+
 LABEL \
 	"Version"="v10" \
 	"Description"="Docker image for Builder based on Debian." \

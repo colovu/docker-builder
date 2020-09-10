@@ -8,6 +8,8 @@ FROM alpine:3.12
 # APK源配置：default / tencent / ustc / aliyun / huawei
 ARG apt_source=tencent
 
+ENV APP_USER=builder
+
 LABEL \
     "Version"="v3.12" \
 	"Description"="Docker image for Builder based on Alpine." \
