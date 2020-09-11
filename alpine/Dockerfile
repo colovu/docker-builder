@@ -8,7 +8,8 @@ FROM alpine:3.12
 # APK源配置：default / tencent / ustc / aliyun / huawei
 ARG apt_source=tencent
 
-ENV APP_USER=builder
+ENV APP_NAME=abuilder \
+	APP_USER=builder
 
 LABEL \
     "Version"="v3.12" \
@@ -19,7 +20,9 @@ LABEL \
 COPY prebuilds /
 COPY customer /
 RUN select_source ${apt_source}
-RUN install_pkg sudo wget git curl ca-certificates iproute2 net-tools nano dpkg gnupg bash build-base cmake cmocka-dev
+RUN install_pkg sudo wget git curl ca-certificates iproute2 net-tools nano \
+		dpkg gnupg bash build-base cmake pkgconf \
+		linux-headers cmocka-dev openssl-dev
 RUN prepare_env && create_user
 
 CMD []
