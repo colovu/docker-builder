@@ -2,9 +2,9 @@
 #
 # 当前 Docker 镜像的编译脚本
 
-debian_name := colovu/dbuilder
-alpine_name := colovu/abuilder
-local_registory := repo-dev.konkawise.com
+debian_name :=colovu/dbuilder
+alpine_name :=colovu/abuilder
+local_registory :=repo-dev.konkawise.com
 
 # 生成镜像TAG，类似：
 # 	<镜像名>:<分支名>-<Git ID>		# Git 仓库且无文件修改直接编译 	
@@ -35,13 +35,13 @@ build:
 # 清理悬空的镜像（无TAG）及停止的容器 
 clean:
 	@echo "Clean untaged images and stoped containers..."
-	@docker ps -a | grep "Exited" | awk '{print $$1}' | xargs docker rm
-	@docker images | grep '<none>' | awk '{print $$3}' | xargs docker rmi -f
+	@docker ps -a | grep "Exited" | awk '{print $$1}' | xargs docker rm | :
+	@docker images | grep '<none>' | awk '{print $$3}' | xargs docker rmi -f | :
 
 clearclean: clean
 	@echo "Clean all images for current application..."
-	@docker images | grep "$(debian_name) " | awk '{print $$3}' | xargs docker rmi -f
-	@docker images | grep "$(alpine_name) " | awk '{print $$3}' | xargs docker rmi -f
+	@docker images | grep "$(debian_name) " | awk '{print $$3}' | xargs docker rmi -f | :
+	@docker images | grep "$(alpine_name) " | awk '{print $$3}' | xargs docker rmi -f | :
 
 tag:
 	@echo "Add tag: $(local_registory)/$(debian_name):latest"
