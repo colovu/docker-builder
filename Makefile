@@ -33,15 +33,17 @@ build:
 	@docker tag "$(alpine_name):$(current_tag)" $(alpine_name):latest
 
 # 清理悬空的镜像（无TAG）及停止的容器 
-clean:
-	@echo "Clean untaged images and stoped containers..."
-	@docker ps -a | grep "Exited" | awk '{print $$1}' | xargs docker rm | :
-	@docker images | grep '<none>' | awk '{print $$3}' | xargs docker rmi -f | :
-
+# 清理悬空的镜像（无TAG）及停止的容器 
 clearclean: clean
+	@echo "Clean untaged images and stoped containers..."
+	@docker ps -a | grep "Exited" | awk '{print $$1}' | sort -u | xargs -L 1 docker rm
+	@docker images | grep '<none>' | awk '{print $$3}' | sort -u | xargs -L 1 docker rmi -f
+
+# 为了防止删除前缀名相同的镜像，在过滤条件中加入一个空格进行过滤
+clean:
 	@echo "Clean all images for current application..."
-	@docker images | grep "$(debian_name) " | awk '{print $$3}' | xargs docker rmi -f | :
-	@docker images | grep "$(alpine_name) " | awk '{print $$3}' | xargs docker rmi -f | :
+	@docker images | grep "$(debian_name) " | awk '{print $$3}' | sort -u | xargs -L 1 docker rmi -f
+	@docker images | grep "$(alpine_name) " | awk '{print $$3}' | sort -u | xargs -L 1 docker rmi -f
 
 tag:
 	@echo "Add tag: $(local_registory)/$(debian_name):latest"
