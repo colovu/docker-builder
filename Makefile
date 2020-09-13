@@ -14,7 +14,7 @@ current_subversion:=$(shell if [[ -d .git ]]; then git rev-parse --short HEAD; e
 current_tag:=$(shell if [[ -d .git ]]; then git rev-parse --abbrev-ref HEAD | sed -e 's/master/latest/'; else echo "latest"; fi)-$(current_subversion)
 
 # Sources List: default / tencent / ustc / aliyun / huawei
-build-arg:=--build-arg apt_source=tencent
+build-arg:=--build-arg apt_source=aliyun
 
 # 设置本地下载服务器路径，加速调试时的本地编译速度
 local_ip:=`ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $$2}'|tr -d "addr:"`

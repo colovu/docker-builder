@@ -21,7 +21,7 @@ COPY prebuilds /
 COPY customer /
 RUN select_source ${apt_source}
 RUN install_pkg sudo wget git curl ca-certificates iproute2 net-tools nano \
-		dpkg gnupg bash build-base cmake pkgconf \
+		dpkg dpkg-dev gnupg bash build-base cmake pkgconf \
 		linux-headers cmocka-dev openssl-dev
 RUN prepare_env && create_user
 
