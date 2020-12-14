@@ -3,7 +3,7 @@
 FROM debian:buster-slim
 
 # APT源配置：default / tencent / ustc / aliyun / huawei
-ARG apt_source=tencent
+ARG apt_source=aliyun
 
 ENV APP_NAME=dbuilder \
 	APP_USER=builder
@@ -39,8 +39,8 @@ RUN select_source ${apt_source}
 #  patch perl perl-modules-5.28 pinentry-curses pkg-config procps python3
 #  python3-minimal python3.7 python3.7-minimal readline-common sudo wget
 #  xz-utils
-RUN install_pkg sudo wget curl git ca-certificates iproute2 net-tools nano \
-		dpkg gnupg dirmngr apt-utils apt-transport-https lsb-release iputils-ping \
+RUN install_pkg sudo wget curl git ca-certificates iproute2 net-tools nano dpkg gnupg \
+		dirmngr apt-utils apt-transport-https lsb-release iputils-ping \
 		build-essential cmake libcmocka-dev pkg-config libssl-dev
 
 RUN prepare_env && create_user

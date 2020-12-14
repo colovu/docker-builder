@@ -17,7 +17,7 @@ current_tag:=$(shell if [ ! `git status >/dev/null 2>&1` ]; then git rev-parse -
 build-arg:=--build-arg apt_source=aliyun
 
 # 设置本地下载服务器路径，加速调试时的本地编译速度
-local_ip:=`ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $$2}'|tr -d "addr:"`
+local_ip:=`echo "en0 eth0" |xargs -n1 ip addr show 2>/dev/null|grep inet|grep -v 127.0.0.1|grep -v inet6|tr "/" " "|awk '{print $$2}'`
 build-arg+=--build-arg local_url=http://$(local_ip)/dist-files
 
 .PHONY: build clean clearclean upgrade tag push
@@ -32,7 +32,6 @@ build:
 	@echo "Add tag: $(alpine_name):latest"
 	@docker tag "$(alpine_name):$(current_tag)" $(alpine_name):latest
 
-# 清理悬空的镜像（无TAG）及停止的容器 
 # 清理悬空的镜像（无TAG）及停止的容器 
 clearclean: clean
 	@echo "Clean untaged images and stoped containers..."
@@ -65,3 +64,4 @@ push: tag
 upgrade: 
 	@echo "Upgrade all images..."
 	@docker images | grep 'colovu' | grep -v '<none>' | grep -v "latest-" | awk '{print $$1":"$$2}' | sort -u | xargs -L 1 docker pull
+

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Ver: 1.0 by Endial Fang (endial@126.com)
+# Ver: 1.1 by Endial Fang (endial@126.com)
 # 
 # shell 执行参数，分别为 -e(命令执行错误则退出脚本) -u(变量未定义则报错) -x(打印实际待执行的命令行)
 set -eux
@@ -141,12 +141,12 @@ fi
 
 # 安装或解压软件
 case "$1" in
-  download)
-    LOG_I "Download success: $CACHE_ROOT/$PACKAGE"
-    ;;
+	download)
+		LOG_I "Download success: $CACHE_ROOT/$PACKAGE"
+		;;
 	install) 
 		LOG_I "Installing $PACKAGE"
-    cp $CACHE_ROOT/$PACKAGE /usr/local/bin/
+		cp $CACHE_ROOT/$PACKAGE /usr/local/bin/
 		;;
 	unpack) 
 		if ! tar -taf $CACHE_ROOT/$PACKAGE >/dev/null 2>&1; then

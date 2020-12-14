@@ -141,9 +141,9 @@ fi
 
 # 安装或解压软件
 case "$1" in
-  download)
-    LOG_I "Download success: $CACHE_ROOT/$PACKAGE"
-    ;;
+	download)
+		LOG_I "Download success: $CACHE_ROOT/$PACKAGE"
+		;;
 	install) 
 		LOG_I "Installing $PACKAGE"
 		cp $CACHE_ROOT/$PACKAGE /usr/local/bin/

@@ -7,7 +7,7 @@
 其中：
 
 - dbuilder：基于 Debian 系统的 Builder 环境
-- abuilder：基于 Alpine 系统的 Builder环境
+- abuilder：基于 Alpine 系统的 Builder 环境
 
 **版本信息：**
 
@@ -16,8 +16,9 @@
 **镜像信息：**
 
 * 镜像地址：
-  * colovu/dbuilder:latest
-  * colovu/abuilder:latest
+  * registry.cn-shenzhen.aliyuncs.com/colovu/dbuilder:latest
+  * registry.cn-shenzhen.aliyuncs.com/colovu/abuilder:latest
+
 
 ## 数据卷
 
@@ -25,7 +26,7 @@
 
 ```shell
  /srv/data			# 工作目录
- /srv/conf		# 配置文件目录
+ /srv/conf		    # 配置文件目录
 ```
 
 ## 用户
@@ -39,8 +40,8 @@
 使用`--from=0`方式：
 
 ```dockerfile
-# 预编译阶段
-FROM colovu/abuilder
+# 预编译阶段 ===============================
+FROM registry.cn-shenzhen.aliyuncs.com/colovu/abuilder
 
 WORKDIR /build
 RUN \
@@ -49,7 +50,9 @@ RUN \
 	wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/${gosu_ver}/gosu-$dpkgArch"; \
 	chmod +x /usr/local/bin/gosu;
 
-# 镜像生成阶段
+# ... 省略
+
+# 镜像生成阶段 ==============================
 FROM scratch
 # 从编译阶段的中拷贝编译结果到当前镜像中
 COPY --from=0 /usr/local/bin/gosu /usr/local/bin/
@@ -59,12 +62,19 @@ CMD []
 使用`--from=name`方式：
 
 ```dockerfile
-# 预编译阶段。命名为`builder`
-FROM colovu/abuilder as builder
+# 预编译阶段。命名为`builder` ==================
+FROM registry.cn-shenzhen.aliyuncs.com/colovu/abuilder as builder
+
+WORKDIR /build
+RUN \
+    dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
+    gosu_ver=1.12; \
+    wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/${gosu_ver}/gosu-$dpkgArch"; \
+    chmod +x /usr/local/bin/gosu;
 
 # ... 省略
 
-# 镜像生成阶段
+# 镜像生成阶段 ==============================
 FROM scratch
 # 从编译阶段的中拷贝编译结果到当前镜像中
 COPY --from=builder /usr/local/bin/gosu /usr/local/bin/
@@ -74,8 +84,7 @@ CMD []
 使用该方式的优势：
 
 - 因系统相关软件包已更新，工具已经预先安装，不需要在每次编译镜像时耗费大量时间在类似重复工作上
-
-- 不用安装、删除临时软件，方式生成多余的垃圾文件；预编译阶段的内容使用完即丢弃，不会对镜像大小产生影响
+- 不用安装、删除临时软件，放置生成多余的垃圾文件；预编译阶段的内容使用完即丢弃，不会对镜像大小产生影响
 
 
 
