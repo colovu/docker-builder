@@ -65,7 +65,8 @@ RUN select_source ${apt_source}
 #  xz-utils
 RUN install_pkg sudo wget curl git ca-certificates iproute2 net-tools nano dpkg gnupg \
 		dirmngr apt-utils apt-transport-https lsb-release iputils-ping \
-		build-essential cmake libcmocka-dev pkg-config libssl-dev
+		build-essential cmake libcmocka-dev pkg-config libssl1.1 libssl-dev \
+		libtool libltdl7 libltdl-dev 
 
 
 CMD []
