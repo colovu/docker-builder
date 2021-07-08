@@ -1,21 +1,45 @@
-# Ver: 1.2 by Endial Fang (endial@126.com)
+# Ver: 1.8 by Endial Fang (endial@126.com)
 #
-FROM debian:buster-slim
 
-# APT源配置：default / tencent / ustc / aliyun / huawei
+# 可变参数 ========================================================================
+
+# 设置当前应用名称及版本
+ARG app_name=builder
+ARG app_version=1.0.0
+
+# 设置默认仓库地址，默认为 阿里云 仓库
+ARG registry_url="registry.cn-shenzhen.aliyuncs.com"
+
+# 设置 apt-get 源：default / tencent / ustc / aliyun / huawei
 ARG apt_source=aliyun
 
-ENV APP_NAME=dbuilder \
-	APP_USER=builder
+# 编译镜像时指定用于加速的本地服务器地址
+ARG local_url=""
+
+
+# 1. 生成镜像 =====================================================================
+FROM ${registry_url}/colovu/debian:buster
+
+# 声明需要使用的全局可变参数
+ARG app_name
+ARG app_version
+ARG registry_url
+ARG apt_source
+ARG local_url
+
+# 镜像所包含应用的基础信息，定义环境变量，供后续脚本使用
+ENV APP_NAME=dbuilder
 
 LABEL \
-	"Version"="v10" \
+	"Version"="v${app_version}" \
 	"Description"="Docker image for Builder based on Debian." \
-	"Dockerfile"="https://github.com/colovu/docker-builder" \
+	"Dockerfile"="https://github.com/colovu/docker-${app_name}" \
 	"Vendor"="Endial Fang (endial@126.com)"
 
-COPY prebuilds /
+# 拷贝应用使用的客制化脚本，并创建对应的用户及数据存储目录
 COPY customer /
+
+# 选择软件包源(Optional)，以加速后续软件包安装
 RUN select_source ${apt_source}
 
 # 以下命令安装的软件包
@@ -43,6 +67,5 @@ RUN install_pkg sudo wget curl git ca-certificates iproute2 net-tools nano dpkg 
 		dirmngr apt-utils apt-transport-https lsb-release iputils-ping \
 		build-essential cmake libcmocka-dev pkg-config libssl-dev
 
-RUN prepare_env && create_user
 
 CMD []
