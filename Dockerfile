@@ -36,9 +36,6 @@ LABEL \
 	"Dockerfile"="https://github.com/colovu/docker-${app_name}" \
 	"Vendor"="Endial Fang (endial@126.com)"
 
-# 拷贝应用使用的客制化脚本，并创建对应的用户及数据存储目录
-COPY customer /
-
 # 选择软件包源(Optional)，以加速后续软件包安装
 RUN select_source ${apt_source}
 
